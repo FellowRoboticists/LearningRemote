@@ -1,16 +1,14 @@
 # -*- ruby -*-
 
-SKETCHBOOK = File.join(ENV['HOME'], 'sketchbook')
-LIBRARIES = File.join(SKETCHBOOK, 'libraries')
+LIB_DIR = 'lib'
+BASE_DIR = '..'
 
-# Must have a lib directory
-directory 'lib'
+LIBS = %w{ IRremote }
 
-directory 'lib/IRremote' do
-  ln_s File.join(LIBRARIES, 'IRremote'), 'lib'
+LIBS.each do | lib |
+  directory File.join(LIB_DIR, lib) do
+    cp_r File.join(BASE_DIR, lib, LIB_DIR, lib), LIB_DIR
+  end
+
+  task :default => File.join(LIB_DIR, lib)
 end
-
-task :default => [ :libraries ]
-
-task :libraries => [ 'lib/IRremote' ]
-

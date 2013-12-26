@@ -1,7 +1,8 @@
 // -*- c -*-
-/**
- * LearningRemote.cpp
- */
+// LearningRemote Arduino sketch
+//
+// Copyright (c) 2013 Dave Sieh
+// See LICENSE.txt for details.
 
 #include <IRremote.h>       // IR remote control library
 
@@ -20,7 +21,6 @@ char * remoteKeyNames[KEYCOUNT] = {
   "PivotCCW", 
   "Halt" 
 }; 
-// not used: Slower, Faster
 
 IRrecv irrecv(irPin);     // create the IR receive object
 decode_results results;   // ir data goes here  

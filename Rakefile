@@ -17,7 +17,8 @@ BASE_DIR = '..'
 env = ArduinoEnvironment.new BASE_DIR
 
 LIBS = [
-  library('IRremote')
+  library('IRremote'),
+  library('pspc_support')
 ]
 
 create_all_library_tasks env, LIBS, :default

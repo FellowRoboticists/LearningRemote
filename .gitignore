@@ -2,3 +2,4 @@
 *.swp
 .build
 lib/IRremote
+lib/pspc_support

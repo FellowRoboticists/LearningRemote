@@ -5,6 +5,7 @@
 // See LICENSE.txt for details.
 
 #include <IRremote.h>       // IR remote control library
+#include <pspc_support.h>   // PROGMEM library
 
 const int irPin = A3;   // analog input pin 3 (digital 17)
 const long NO_KEY = -1; 
@@ -12,15 +13,36 @@ const long TIMEOUT = 5000; //max number of milliseconds to wait for a key (5 sec
 const int KEYCOUNT = 7; // the number of key codes supported
   
 long  irKeyCodes[ KEYCOUNT]; // this will store raw codes for all keys            
-char * remoteKeyNames[KEYCOUNT] = {
-  "Forward", 
-  "Back", 
-  "Left",  
-  "Right", 
-  "PivotCW", 
-  "PivotCCW", 
-  "Halt" 
-}; 
+
+#define KEY_NAME(i) STRING_FROM_TABLE(remoteKeyNames,i)
+
+const char keyForward[] PROGMEM = "Forward";
+const char keyBack[] PROGMEM = "Back";
+const char keyLeft[] PROGMEM = "Left";
+const char keyRight[] PROGMEM = "Right";
+const char keyPivotCW[] PROGMEM = "PivotCW";
+const char keyPivotCCW[] PROGMEM = "PivotCCW";
+const char keyHalt[] PROGMEM = "Halt";
+
+PGM_P const remoteKeyNames[] PROGMEM = {
+  keyForward,
+  keyBack,
+  keyLeft,
+  keyRight,
+  keyPivotCW,
+  keyPivotCCW,
+  keyHalt
+};
+
+//char * remoteKeyNames[KEYCOUNT] = {
+  //"Forward", 
+  //"Back", 
+  //"Left",  
+  //"Right", 
+  //"PivotCW", 
+  //"PivotCCW", 
+  //"Halt" 
+//}; 
 
 IRrecv irrecv(irPin);     // create the IR receive object
 decode_results results;   // ir data goes here  
@@ -33,7 +55,7 @@ void setup() {
   learnKeycodes();
   printConstants();
   Serial.println();
-  Serial.println("Now press the remote keys to verify correct detection");
+  Serial.println(P("Now press the remote keys to verify correct detection"));
 }
 
 void loop() {
@@ -41,7 +63,7 @@ void loop() {
   if (key!= NO_KEY) {
     int index = findKey(key);
     if (index != NO_KEY) {
-      Serial.println(remoteKeyNames[index]);
+      Serial.println(KEY_NAME(index));
     }
   } 
 }
@@ -51,39 +73,39 @@ void loop() {
    The key map should be set to zero before calling this.
 */
 void learnKeycodes() {
-  Serial.println("Ready to learn remote codes");      
+  Serial.println(P("Ready to learn remote codes"));
 
   for (int i = 0; i < KEYCOUNT;  ) {
     //delay(100);
     Serial.println();
-    Serial.print("press remote key for ");
-    Serial.print(remoteKeyNames[i]);    
+    Serial.print(P("press remote key for "));
+    Serial.print(KEY_NAME(i));    
     long key = getIrKeycode(TIMEOUT);
 
     if (key > 0 ) {
-      Serial.println(", release key ...");
+      Serial.println(P(", release key ..."));
       long temp;
 
       do {          
-	temp = getIrKeycode(200);                
+        temp = getIrKeycode(200);                
       } while( temp == key);
 
       if (findKey(key) == NO_KEY) {
-	Serial.print(" -> using code ");
-	Serial.print( key );
-	Serial.print(" for ");
-	Serial.println(remoteKeyNames[i]); 
-	irKeyCodes[i] = key;        
-	i++;
+        Serial.print(P(" -> using code "));
+        Serial.print( key );
+        Serial.print(P(" for "));
+        Serial.println(KEY_NAME(i)); 
+        irKeyCodes[i] = key;        
+        i++;
       } else {
-	Serial.println("key already assigned"); 
+        Serial.println(P("key already assigned")); 
       }
     } else {
       continue;
     }
   }     
 
-  Serial.println("Done\n");  
+  Serial.println(P("Done\n"));  
 }
 
 /**
@@ -133,21 +155,21 @@ int findKey(long code) {
 
 void printConstants() {
   int i = 0; 
-  Serial.println("// IR remote keycodes:"); 
-  Serial.print("const long IR_MOVE_FORWARD = "); Serial.print(irKeyCodes[i++]); 
-  Serial.println(";");
-  Serial.print("const long IR_MOVE_BACK    = "); Serial.print(irKeyCodes[i++]); 
-  Serial.println(";");
-  Serial.print("const long IR_MOVE_LEFT    = "); Serial.print(irKeyCodes[i++]); 
-  Serial.println(";");
-  Serial.print("const long IR_MOVE_RIGHT   = "); Serial.print(irKeyCodes[i++]); 
-  Serial.println(";");
-  Serial.print("const long IR_PIVOT_CW     = "); Serial.print(irKeyCodes[i++]); 
-  Serial.println(";"); 
-  Serial.print("const long IR_PIVOT_CCW    = "); Serial.print(irKeyCodes[i++]); 
-  Serial.println(";");
-  Serial.print("const long IR_HALT         = "); Serial.print(irKeyCodes[i++]); 
-  Serial.println(";");
+  Serial.println(P("// IR remote keycodes:")); 
+  Serial.print(P("const long IR_MOVE_FORWARD = ")); Serial.print(irKeyCodes[i++]); 
+  Serial.println(P(";"));
+  Serial.print(P("const long IR_MOVE_BACK    = ")); Serial.print(irKeyCodes[i++]); 
+  Serial.println(P(";"));
+  Serial.print(P("const long IR_MOVE_LEFT    = ")); Serial.print(irKeyCodes[i++]); 
+  Serial.println(P(";"));
+  Serial.print(P("const long IR_MOVE_RIGHT   = ")); Serial.print(irKeyCodes[i++]); 
+  Serial.println(P(";"));
+  Serial.print(P("const long IR_PIVOT_CW     = ")); Serial.print(irKeyCodes[i++]); 
+  Serial.println(P(";")); 
+  Serial.print(P("const long IR_PIVOT_CCW    = ")); Serial.print(irKeyCodes[i++]); 
+  Serial.println(P(";"));
+  Serial.print(P("const long IR_HALT         = ")); Serial.print(irKeyCodes[i++]); 
+  Serial.println(P(";"));
  
-  Serial.println(); Serial.println("Copy the above lines to the Remote tab");
+  Serial.println(); Serial.println(P("Copy the above lines to the Remote tab"));
 }

@@ -34,16 +34,6 @@ PGM_P const remoteKeyNames[] PROGMEM = {
   keyHalt
 };
 
-//char * remoteKeyNames[KEYCOUNT] = {
-  //"Forward", 
-  //"Back", 
-  //"Left",  
-  //"Right", 
-  //"PivotCW", 
-  //"PivotCCW", 
-  //"Halt" 
-//}; 
-
 IRrecv irrecv(irPin);     // create the IR receive object
 decode_results results;   // ir data goes here  
 
